@@ -3,15 +3,15 @@ package modelo;
 import estados_celdas.EstadoCelda;
 import estados_celdas.CeldaMuertaExtendida;
 
-/**
- * Representa el tablero completo del Juego de la Vida.
+/*
+ *representa el tablero completo del Juego de la Vida
  * 
- * El tablero es una matriz de n×m celdas que evolucionan generación tras
- * generación según las reglas del juego. Esta clase es responsable de:
- * - Mantener el estado actual de todas las celdas
- * - Contar vecinos vivos de cada celda
- * - Calcular la siguiente generación
- * - Detectar si hubo cambios (estabilidad)
+ *el tablero es una matriz de n×m celdas que evolucionan generación tras
+ *generación según las reglas del juego. Esta clase es responsable de:
+ * - mantener el estado actual de todas las celdas
+ * - contar vecinos vivos de cada celda
+ * - calcular la siguiente generación
+ * - detectar si hubo cambios (estabilidad)
  */
 public class Tablero {
     
@@ -19,25 +19,17 @@ public class Tablero {
     private final int filas;
     private final int columnas;
     
-    /**
-     * Constructor del tablero.
-     * Inicializa todas las celdas en estado muerto por defecto.
-     * 
-     * @param filas número de filas del tablero
-     * @param columnas número de columnas del tablero
-     */
+    //Constructor del tablero, inicializa todas las celdas en estado muerto por defecto
     public Tablero(int filas, int columnas) {
         this.filas = filas;
         this.columnas = columnas;
         this.celdas = new Celda[filas][columnas];
         
-        // Inicializar todas las celdas en estado muerto
+        //inicializar todas las celdas en estado muerto
         inicializarTablero();
     }
     
-    /**
-     * Inicializa el tablero con todas las celdas muertas.
-     */
+    //inicializa el tablero con todas las celdas muertas
     private void inicializarTablero() {
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
@@ -46,13 +38,7 @@ public class Tablero {
         }
     }
 
-    /**
-     * Establece el estado de una celda específica en el tablero.
-     * 
-     * @param fila fila de la celda
-     * @param columna columna de la celda
-     * @param nuevoEstado el nuevo estado para la celda
-     */
+    //establece el estado de una celda específica en el tablero
     public void establecerEstadoCelda(int fila, int columna, EstadoCelda nuevoEstado) {
         if (fila >= 0 && fila < filas && columna >= 0 && columna < columnas) {
             celdas[fila][columna].setEstado(nuevoEstado);
@@ -61,26 +47,14 @@ public class Tablero {
         }
     }
     
-    /**
-     * Establece el estado de una celda específica.
-     * 
-     * @param fila fila de la celda
-     * @param columna columna de la celda
-     * @param estado nuevo estado de la celda
-     */
+    //establece el estado de una celda específica
     public void setCelda(int fila, int columna, EstadoCelda estado) {
         if (posicionValida(fila, columna)) {
             celdas[fila][columna].setEstado(estado);
         }
     }
     
-    /**
-     * Obtiene una celda específica del tablero.
-     * 
-     * @param fila fila de la celda
-     * @param columna columna de la celda
-     * @return la celda en esa posición, o null si la posición es inválida
-     */
+    //obtiene una celda específica del tablero
     public Celda getCelda(int fila, int columna) {
         if (posicionValida(fila, columna)) {
             return celdas[fila][columna];
@@ -88,24 +62,14 @@ public class Tablero {
         return null;
     }
     
-    /**
-     * Verifica si una posición es válida dentro del tablero
-     * 
-     * @param fila fila a verificar
-     * @param columna columna a verificar
-     * @return true si la posición está dentro de los límites, false en caso contrario
-     */
+    //verifica si una posición es válida dentro del tablero
     private boolean posicionValida(int fila, int columna) {
         return fila >= 0 && fila < filas && columna >= 0 && columna < columnas;
     }
     
-    /**
-     * Cuenta la cantidad de vecinos vivos de una celda específica.
-     * Considera los 8 vecinos adyacentes (horizontal, vertical y diagonal).
-     * 
-     * @param fila fila de la celda
-     * @param columna columna de la celda
-     * @return cantidad de vecinos vivos (0-8)
+    /*
+     *cuenta la cantidad de vecinos vivos de una celda específica
+     *considera los 8 vecinos adyacentes 
      */
     public int contarVecinosVivos(int fila, int columna) {
         int vecinosVivos = 0;

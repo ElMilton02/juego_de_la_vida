@@ -1,36 +1,26 @@
+
+
 import interfaz.InterfazCLI;
 import interfaz.InterfazGUI;
 import modelo.Simulacion;
 import modelo.Tablero;
 import javax.swing.UIManager;
 
-/**
- * Clase principal del programa - Juego de la Vida.
- * 
- * Permite elegir entre interfaz CLI (consola) o GUI (gráfica).
- * 
- * @author [Tu nombre]
- * @version 1.0
+/*
+ *clase principal del programa - Juego de la Vida.
+ *permite elegir entre interfaz CLI (consola) o GUI (gráfica).
  */
 public class Main {
     
-    /**
-     * Método main - punto de entrada del programa.
-     * 
-     * @param args argumentos de línea de comandos:
-     *             "cli" para interfaz de consola
-     *             "gui" para interfaz gráfica
-     *             sin argumentos: pregunta al usuario
-     */
+    //metodo main - punto de entrada del programa
     public static void main(String[] args) {
         
-        // Determinar qué interfaz usar
+        //determinar qué interfaz usar
         String modo = "";
         
         if (args.length > 0) {
             modo = args[0].toLowerCase();
         } else {
-            // Preguntar al usuario
             System.out.println("╔═══════════════════════════════════════════╗");
             System.out.println("║  JUEGO DE LA VIDA - Conway's Game of Life ║");
             System.out.println("╚═══════════════════════════════════════════╝");
@@ -46,11 +36,11 @@ public class Main {
                 int opcion = scanner.nextInt();
                 modo = (opcion == 2) ? "gui" : "cli";
             } catch (Exception e) {
-                modo = "cli"; // Por defecto CLI
+                modo = "cli"; 
             }
         }
         
-        // Iniciar la interfaz correspondiente
+        //iniciar la interfaz correspondiente
         if (modo.equals("gui")) {
             iniciarGUI();
         } else {
@@ -58,30 +48,26 @@ public class Main {
         }
     }
     
-    /**
-     * Inicia la interfaz CLI (consola).
-     */
+    //inicia la interfaz CLI (consola).
     private static void iniciarCLI() {
         InterfazCLI interfaz = new InterfazCLI();
         interfaz.iniciar();
     }
     
-    /**
-     * Inicia la interfaz GUI (gráfica).
-     */
+    //inicia la interfaz GUI (gráfica).
     private static void iniciarGUI() {
-        // Configurar Look and Feel para que se vea mejor
+        //configurar Look and Feel para que se vea mejor
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
-            // Si falla, usar el look and feel por defecto
+            //si falla, usar el look and feel por defecto
         }
         
-        // Crear simulación inicial con tablero pequeño
+        //crear simulación inicial con tablero pequeño
         Tablero tableroInicial = new Tablero(20, 30);
         Simulacion simulacion = new Simulacion(tableroInicial);
         
-        // Crear y mostrar la GUI
+        //crear y mostrar la GUI
         javax.swing.SwingUtilities.invokeLater(() -> {
             new InterfazGUI(simulacion);
         });

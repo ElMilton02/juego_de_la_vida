@@ -9,7 +9,7 @@ package estados_celdas;
 public class CeldaMuerta extends EstadoCelda {
     
     /**
-     *Calcula el siguiente estado según las reglas del Juego de la Vida
+     *calcula el siguiente estado según las reglas del Juego de la Vida
      *si tiene 3 vecinos vivos se combierte en una selda viva
      */
     @Override

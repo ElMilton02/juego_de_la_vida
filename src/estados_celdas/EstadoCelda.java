@@ -5,7 +5,7 @@ package estados_celdas;
 public abstract class EstadoCelda {
     
     /*
-     *Calcula el próximo estado de la celda basándose en la cantidad de vecinos vivos que tiene en la generación actual
+     *calcula el próximo estado de la celda basándose en la cantidad de vecinos vivos que tiene en la generación actual
      *implementa las reglas específicas de evolución para cada estado
      *como parametro toma la cantidad de vecinos vivos (0-8) y devuelve el nuevo estado que tendra la celda
      */
@@ -20,9 +20,9 @@ public abstract class EstadoCelda {
     //retorna el nombre del estado
     public abstract String getNombre();
     
-    /**
-     * Sobrescribimos equals para comparar estados por tipo.
-     * Dos estados del mismo tipo se consideran iguales.
+    /*
+     *sobrescribimos equals para comparar estados por tipo.
+     *dos estados del mismo tipo se consideran iguales.
      */
     @Override
     public boolean equals(Object obj) {

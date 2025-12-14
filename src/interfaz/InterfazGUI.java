@@ -7,29 +7,28 @@ import java.io.File;
 import modelo.*;
 import estados_celdas.*;
 
-/**
- * Interfaz Gráfica de Usuario (GUI) para el Juego de la Vida.
+/*
+ *interfaz Gráfica de Usuario (GUI) para el Juego de la Vida.
  * 
- * Proporciona una visualización gráfica del tablero con controles
- * interactivos para ejecutar la simulación.
+ *proporciona una visualización gráfica del tablero con controlesinteractivos para ejecutar la simulación.
  * 
- * Componentes:
- * - Panel de tablero con visualización gráfica
- * - Botones de control (Iniciar, Pausar, Paso, Reiniciar)
- * - Control de velocidad (Slider)
- * - Estadísticas en tiempo real
- * - Menú para cargar archivos
+ *componentes:
+ * - panel de tablero con visualización gráfica
+ * - botones de control (Iniciar, Pausar, Paso, Reiniciar)
+ * - control de velocidad (Slider)
+ * - estadísticas en tiempo real
+ * - menú para cargar archivos con selector
  * 
- * Esta interfaz es OPCIONAL (Bonus) según el enunciado.
+ *esta interfaz es OPCIONAL (Bonus) según el enunciado
  */
 public class InterfazGUI extends JFrame {
     
-    // Componentes principales
+    //componentes principales
     private Simulacion simulacion;
     private PanelTablero panelTablero;
     private Timer timer;
     
-    // Controles
+    //controles
     private JButton btnIniciar;
     private JButton btnPausar;
     private JButton btnPaso;
@@ -38,11 +37,12 @@ public class InterfazGUI extends JFrame {
     private JLabel lblEstadisticas;
     private JLabel lblVelocidad;
     
-    // Estado
+    //estado
     private boolean ejecutando;
-    private int intervalo; // milisegundos entre generaciones
+    private int intervalo; //milisegundos entre generaciones
     
-    // Constantes de visualización
+    //constantes
+    private static final String DIRECTORIO_EJEMPLOS = "ejemplos";
     private static final int TAMAÑO_CELDA = 20; // pixels por celda
     private static final Color COLOR_VIVA = new Color(34, 139, 34);      // Verde
     private static final Color COLOR_MUERTA = new Color(240, 240, 240);  // Gris claro
@@ -50,11 +50,7 @@ public class InterfazGUI extends JFrame {
     private static final Color COLOR_LATENTE = new Color(135, 206, 250); // Azul claro
     private static final Color COLOR_GRID = new Color(200, 200, 200);    // Gris para bordes
     
-    /**
-     * Constructor de la interfaz GUI.
-     * 
-     * @param simulacion la simulación del juego
-     */
+    //constructor de la interfaz GUI
     public InterfazGUI(Simulacion simulacion) {
         this.simulacion = simulacion;
         this.ejecutando = false;
@@ -67,9 +63,7 @@ public class InterfazGUI extends JFrame {
         setVisible(true);
     }
     
-    /**
-     * Configura las propiedades básicas de la ventana.
-     */
+    //configura las propiedades básicas de la ventana
     private void configurarVentana() {
         setTitle("Juego de la Vida - Conway's Game of Life");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -81,36 +75,32 @@ public class InterfazGUI extends JFrame {
         int alto = tablero.getFilas() * TAMAÑO_CELDA + 250;
         setSize(Math.max(ancho, 600), Math.max(alto, 500));
         
-        setLocationRelativeTo(null); // Centrar en pantalla
+        setLocationRelativeTo(null); //centrar en pantalla
     }
     
-    /**
-     * Crea todos los componentes de la interfaz.
-     */
+    //crea todos los componentes de la interfaz
     private void crearComponentes() {
-        // Panel del tablero (centro)
+        //panel del tablero (centro)
         panelTablero = new PanelTablero();
         JScrollPane scrollPane = new JScrollPane(panelTablero);
         add(scrollPane, BorderLayout.CENTER);
         
-        // Panel de controles (sur)
+        //panel de controles (sur)
         JPanel panelControles = crearPanelControles();
         add(panelControles, BorderLayout.SOUTH);
         
-        // Barra de menú (norte)
+        //barra de menú (norte)
         JMenuBar menuBar = crearBarraMenu();
         setJMenuBar(menuBar);
     }
     
-    /**
-     * Crea el panel de controles con botones y estadísticas.
-     */
+    //crea el panel de controles con botones y estadísticas
     private JPanel crearPanelControles() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        // Panel de botones
+        //panel de botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         
         btnIniciar = new JButton("▶ Iniciar");
@@ -135,7 +125,7 @@ public class InterfazGUI extends JFrame {
         panelBotones.add(btnPaso);
         panelBotones.add(btnReiniciar);
         
-        // Panel de velocidad
+        //panel de velocidad
         JPanel panelVelocidad = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panelVelocidad.add(new JLabel("Velocidad: "));
         
@@ -155,13 +145,13 @@ public class InterfazGUI extends JFrame {
         panelVelocidad.add(sliderVelocidad);
         panelVelocidad.add(lblVelocidad);
         
-        // Panel de estadísticas
+        //panel de estadísticas
         JPanel panelEstadisticas = new JPanel(new FlowLayout(FlowLayout.CENTER));
         lblEstadisticas = new JLabel(obtenerEstadisticas());
         lblEstadisticas.setFont(new Font("Monospaced", Font.BOLD, 12));
         panelEstadisticas.add(lblEstadisticas);
         
-        // Agregar todo al panel principal
+        //agregar todo al panel principal
         panel.add(panelBotones);
         panel.add(panelVelocidad);
         panel.add(panelEstadisticas);
@@ -169,18 +159,16 @@ public class InterfazGUI extends JFrame {
         return panel;
     }
     
-    /**
-     * Crea la barra de menú.
-     */
+    //crea la barra de menú
     private JMenuBar crearBarraMenu() {
         JMenuBar menuBar = new JMenuBar();
         
-        // Menú Archivo
+        //menú Archivo
         JMenu menuArchivo = new JMenu("Archivo");
         
         JMenuItem itemCargar = new JMenuItem("Cargar desde archivo...");
         itemCargar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
-        itemCargar.addActionListener(e -> cargarDesdeArchivo());
+        itemCargar.addActionListener(e -> mostrarDialogoSeleccionArchivo());
         
         JMenuItem itemAleatorio = new JMenuItem("Generar aleatorio...");
         itemAleatorio.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
@@ -195,7 +183,7 @@ public class InterfazGUI extends JFrame {
         menuArchivo.addSeparator();
         menuArchivo.add(itemSalir);
         
-        // Menú Ayuda
+        //menú Ayuda
         JMenu menuAyuda = new JMenu("Ayuda");
         
         JMenuItem itemAcercaDe = new JMenuItem("Acerca de...");
@@ -213,9 +201,7 @@ public class InterfazGUI extends JFrame {
         return menuBar;
     }
     
-    /**
-     * Crea el Timer para la animación automática.
-     */
+    //crea el Timer para la animación automática
     private void crearTimer() {
         timer = new Timer(intervalo, e -> {
             boolean huboCambios = simulacion.ejecutarGeneracion();
@@ -233,9 +219,7 @@ public class InterfazGUI extends JFrame {
         });
     }
     
-    /**
-     * Inicia la simulación continua.
-     */
+    //inicia la simulación continua
     private void iniciar() {
         if (!ejecutando) {
             ejecutando = true;
@@ -246,9 +230,7 @@ public class InterfazGUI extends JFrame {
         }
     }
     
-    /**
-     * Pausa la simulación.
-     */
+    //pausa la simulación
     private void pausar() {
         if (ejecutando) {
             ejecutando = false;
@@ -259,9 +241,7 @@ public class InterfazGUI extends JFrame {
         }
     }
     
-    /**
-     * Ejecuta un solo paso de la simulación.
-     */
+    //ejecuta un solo paso de la simulación
     private void ejecutarPaso() {
         boolean huboCambios = simulacion.ejecutarGeneracion();
         panelTablero.repaint();
@@ -275,9 +255,7 @@ public class InterfazGUI extends JFrame {
         }
     }
     
-    /**
-     * Reinicia la simulación con un nuevo tablero.
-     */
+    //reinicia la simulación con un nuevo tablero
     private void reiniciar() {
         pausar();
         
@@ -287,48 +265,157 @@ public class InterfazGUI extends JFrame {
             JOptionPane.YES_NO_CANCEL_OPTION);
         
         if (opcion == JOptionPane.YES_OPTION) {
-            cargarDesdeArchivo();
+            mostrarDialogoSeleccionArchivo();
         } else if (opcion == JOptionPane.NO_OPTION) {
             generarAleatorio();
         }
     }
     
-    /**
-     * Carga un tablero desde archivo.
-     */
-    private void cargarDesdeArchivo() {
-        JFileChooser fileChooser = new JFileChooser("ejemplos");
+    //muestra un diálogo personalizado para seleccionar archivos del directorio ejemplos
+    private void mostrarDialogoSeleccionArchivo() {
+        //crear diálogo personalizado
+        JDialog dialogo = new JDialog(this, "Seleccionar Archivo", true);
+        dialogo.setLayout(new BorderLayout(10, 10));
+        dialogo.setSize(450, 400);
+        dialogo.setLocationRelativeTo(this);
+        
+        //panel superior con título
+        JLabel lblTitulo = new JLabel("Archivos disponibles en " + DIRECTORIO_EJEMPLOS + "/", JLabel.CENTER);
+        lblTitulo.setFont(new Font("Arial", Font.BOLD, 14));
+        lblTitulo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        dialogo.add(lblTitulo, BorderLayout.NORTH);
+        
+        //lista de archivos
+        File directorio = new File(DIRECTORIO_EJEMPLOS);
+        DefaultListModel<String> modeloLista = new DefaultListModel<>();
+        JList<String> listaArchivos = new JList<>(modeloLista);
+        listaArchivos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listaArchivos.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        
+        //llenar la lista con archivos .txt
+        if (directorio.exists() && directorio.isDirectory()) {
+            File[] archivos = directorio.listFiles((dir, nombre) -> 
+                nombre.toLowerCase().endsWith(".txt")
+            );
+            
+            if (archivos != null && archivos.length > 0) {
+                for (File archivo : archivos) {
+                    modeloLista.addElement(archivo.getName());
+                }
+            } else {
+                modeloLista.addElement("(No hay archivos .txt en el directorio)");
+                listaArchivos.setEnabled(false);
+            }
+        } else {
+            modeloLista.addElement("(Directorio " + DIRECTORIO_EJEMPLOS + "/ no encontrado)");
+            listaArchivos.setEnabled(false);
+        }
+        
+        JScrollPane scrollPane = new JScrollPane(listaArchivos);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        dialogo.add(scrollPane, BorderLayout.CENTER);
+        
+        //panel de botones
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        
+        JButton btnCargar = new JButton("Cargar Seleccionado");
+        btnCargar.addActionListener(e -> {
+            String seleccion = listaArchivos.getSelectedValue();
+            if (seleccion != null && !seleccion.startsWith("(")) {
+                String ruta = DIRECTORIO_EJEMPLOS + File.separator + seleccion;
+                cargarArchivoDesdeRuta(ruta);
+                dialogo.dispose();
+            } else {
+                JOptionPane.showMessageDialog(dialogo,
+                    "Por favor, seleccione un archivo válido.",
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE);
+            }
+        });
+        
+        JButton btnNavegar = new JButton("Navegar...");
+        btnNavegar.addActionListener(e -> {
+            dialogo.dispose();
+            cargarDesdeNavegador();
+        });
+        
+        JButton btnCancelar = new JButton("Cancelar");
+        btnCancelar.addActionListener(e -> dialogo.dispose());
+        
+        panelBotones.add(btnCargar);
+        panelBotones.add(btnNavegar);
+        panelBotones.add(btnCancelar);
+        dialogo.add(panelBotones, BorderLayout.SOUTH);
+        
+        //permitir doble clic para cargar
+        listaArchivos.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    String seleccion = listaArchivos.getSelectedValue();
+                    if (seleccion != null && !seleccion.startsWith("(")) {
+                        String ruta = DIRECTORIO_EJEMPLOS + File.separator + seleccion;
+                        cargarArchivoDesdeRuta(ruta);
+                        dialogo.dispose();
+                    }
+                }
+            }
+        });
+        
+        dialogo.setVisible(true);
+    }
+    
+    //abre el navegador de archivos estándar para seleccionar un archivo
+    private void cargarDesdeNavegador() {
+        JFileChooser fileChooser = new JFileChooser(DIRECTORIO_EJEMPLOS);
         fileChooser.setDialogTitle("Seleccionar archivo de configuración");
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                return f.isDirectory() || f.getName().toLowerCase().endsWith(".txt");
+            }
+            
+            @Override
+            public String getDescription() {
+                return "Archivos de texto (*.txt)";
+            }
+        });
         
         int resultado = fileChooser.showOpenDialog(this);
         
         if (resultado == JFileChooser.APPROVE_OPTION) {
             File archivo = fileChooser.getSelectedFile();
-            try {
-                pausar();
-                Tablero tablero = LectorArchivos.cargarDesdeArchivo(archivo.getPath());
-                simulacion = new Simulacion(tablero);
-                panelTablero.actualizarTablero();
-                actualizarEstadisticas();
-                ajustarTamañoVentana();
-                
-                JOptionPane.showMessageDialog(this,
-                    "Tablero cargado: " + tablero.getFilas() + "x" + tablero.getColumnas(),
-                    "Éxito",
-                    JOptionPane.INFORMATION_MESSAGE);
-                    
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,
-                    "Error al cargar archivo:\n" + ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            }
+            cargarArchivoDesdeRuta(archivo.getPath());
         }
     }
     
-    /**
-     * Genera un tablero aleatorio.
-     */
+    //carga un tablero desde una ruta de archivo
+    private void cargarArchivoDesdeRuta(String ruta) {
+        try {
+            pausar();
+            Tablero tablero = LectorArchivos.cargarDesdeArchivo(ruta);
+            simulacion = new Simulacion(tablero);
+            panelTablero.actualizarTablero();
+            actualizarEstadisticas();
+            ajustarTamañoVentana();
+            
+            JOptionPane.showMessageDialog(this,
+                "Tablero cargado exitosamente:\n" +
+                "Archivo: " + new File(ruta).getName() + "\n" +
+                "Dimensiones: " + tablero.getFilas() + "x" + tablero.getColumnas() + "\n" +
+                "Celdas vivas: " + simulacion.contarCeldasVivas(),
+                "Éxito",
+                JOptionPane.INFORMATION_MESSAGE);
+                
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                "Error al cargar archivo:\n" + ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    //genera un tablero aleatorio
     private void generarAleatorio() {
         JPanel panel = new JPanel(new GridLayout(3, 2, 5, 5));
         
@@ -362,7 +449,7 @@ public class InterfazGUI extends JFrame {
                 for (int i = 0; i < filas; i++) {
                     for (int j = 0; j < columnas; j++) {
                         if (Math.random() < prob) {
-                            tablero.setCelda(i, j, new CeldaViva());
+                            tablero.setCelda(i, j, new CeldaVivaExtendida());
                         }
                     }
                 }
@@ -381,9 +468,7 @@ public class InterfazGUI extends JFrame {
         }
     }
     
-    /**
-     * Ajusta el tamaño de la ventana según el tablero.
-     */
+    //ajusta el tamaño de la ventana según el tablero
     private void ajustarTamañoVentana() {
         Tablero tablero = simulacion.getTablero();
         int ancho = tablero.getColumnas() * TAMAÑO_CELDA + 100;
@@ -392,16 +477,12 @@ public class InterfazGUI extends JFrame {
         setLocationRelativeTo(null);
     }
     
-    /**
-     * Actualiza las estadísticas mostradas.
-     */
+    //actualiza las estadísticas mostradas
     private void actualizarEstadisticas() {
         lblEstadisticas.setText(obtenerEstadisticas());
     }
     
-    /**
-     * Obtiene el texto de estadísticas.
-     */
+    //obtiene el texto de estadísticas
     private String obtenerEstadisticas() {
         return String.format("Generación: %d  |  Celdas vivas: %d  |  Estado: %s",
             simulacion.getGeneracionActual(),
@@ -409,9 +490,7 @@ public class InterfazGUI extends JFrame {
             ejecutando ? "Ejecutando" : "Pausado");
     }
     
-    /**
-     * Muestra información sobre el programa.
-     */
+    //muestra información sobre el programa
     private void mostrarAcercaDe() {
         JOptionPane.showMessageDialog(this,
             "Juego de la Vida - Conway's Game of Life\n\n" +
@@ -423,29 +502,32 @@ public class InterfazGUI extends JFrame {
             JOptionPane.INFORMATION_MESSAGE);
     }
     
-    /**
-     * Muestra las reglas del juego.
-     */
+    //muestra las reglas del juego
     private void mostrarReglas() {
         String reglas = 
-            "Reglas extensión:\n- Viva con 2-3 vecinos: 25% enferma, 75% sobrevive.\n- Enferma: siempre muere.\n- Latente: revive con 1 vecino (extensión extra: 25% al morir).";
+            "REGLAS BÁSICAS:\n" +
+            "• Viva con < 2 vecinos → muere (soledad)\n" +
+            "• Viva con 2-3 vecinos → sobrevive\n" +
+            "• Viva con > 3 vecinos → muere (sobrepoblación)\n" +
+            "• Muerta con 3 vecinos → revive\n\n" +
+            "EXTENSIONES:\n" +
+            "• Viva sobreviviendo → 25% enferma\n" +
+            "• Enferma → siempre muere\n" +
+            "• Viva muriendo → 25% latente\n" +
+            "• Latente con 1 vecino → revive";
         
         JOptionPane.showMessageDialog(this, reglas,
             "Reglas del Juego", JOptionPane.INFORMATION_MESSAGE);
     }
     
-    /**
-     * Panel personalizado para dibujar el tablero.
-     */
+    //panel personalizado para dibujar el tablero
     private class PanelTablero extends JPanel {
         
         public PanelTablero() {
             actualizarTablero();
         }
         
-        /**
-         * Actualiza el tamaño del panel según el tablero.
-         */
+        //actualiza el tamaño del panel según el tablero
         public void actualizarTablero() {
             Tablero tablero = simulacion.getTablero();
             int ancho = tablero.getColumnas() * TAMAÑO_CELDA;
@@ -461,9 +543,7 @@ public class InterfazGUI extends JFrame {
             dibujarTablero(g);
         }
         
-        /**
-         * Dibuja el tablero completo.
-         */
+        //dibuja el tablero completo
         private void dibujarTablero(Graphics g) {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
@@ -478,32 +558,28 @@ public class InterfazGUI extends JFrame {
             }
         }
         
-        /**
-         * Dibuja una celda individual.
-         */
+        //dibuja una celda individual
         private void dibujarCelda(Graphics2D g, Celda celda, int fila, int col) {
             int x = col * TAMAÑO_CELDA;
             int y = fila * TAMAÑO_CELDA;
             
-            // Color según el estado
+            //color según el estado
             Color color = obtenerColorEstado(celda);
             g.setColor(color);
             g.fillRect(x, y, TAMAÑO_CELDA, TAMAÑO_CELDA);
             
-            // Borde
+            //borde
             g.setColor(COLOR_GRID);
             g.drawRect(x, y, TAMAÑO_CELDA, TAMAÑO_CELDA);
         }
         
-        /**
-         * Obtiene el color según el estado de la celda.
-         */
+        //obtiene el color según el estado de la celda
         private Color obtenerColorEstado(Celda celda) {
             char caracter = celda.getCaracter();
             switch (caracter) {
                 case 'O': return COLOR_VIVA;
                 case 'E': return COLOR_ENFERMA;
-                case 'L': return COLOR_LATENTE;
+                case 'X': return COLOR_LATENTE;
                 default:  return COLOR_MUERTA;
             }
         }

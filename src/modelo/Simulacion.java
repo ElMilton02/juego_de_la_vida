@@ -1,6 +1,6 @@
 package modelo;
 
-/**
+/*
  *controla la simulación
  * 
  *coordina la evolución del tablero a través de múltiples generaciones, maneja la velocidad de simulación y detecta condiciones de parada (estabilidad).
@@ -40,7 +40,7 @@ public class Simulacion {
         for (int i = 0; i < numGeneraciones; i++) {
             boolean huboCambios = ejecutarGeneracion();
             
-            // Si no hubo cambios, el tablero se estabilizó
+            //si no hubo cambios, el tablero se estabilizó
             if (!huboCambios) {
                 return false;
             }
@@ -48,13 +48,10 @@ public class Simulacion {
         return true;
     }
     
-    /**
-     * Ejecuta generaciones indefinidamente con un intervalo de tiempo entre cada una.
-     * Se detiene si el tablero se estabiliza o si se llama a detener().
-     * 
-     * Este método es útil para visualización en tiempo real.
-     * 
-     * @param intervaloMs intervalo en milisegundos entre generaciones
+    /*
+     *ejecuta generaciones indefinidamente con un intervalo de tiempo entre cada una
+     *se detiene si el tablero se estabiliza o si se llama a detener()
+     *este método sirve para la visualización en tiempo real.
      */
     public void ejecutarIndefinidamente(int intervaloMs) {
         enEjecucion = true;
@@ -62,13 +59,13 @@ public class Simulacion {
         while (enEjecucion) {
             boolean huboCambios = ejecutarGeneracion();
             
-            // Si no hubo cambios, el tablero se estabilizó
+            //si no hubo cambios, el tablero se estabilizó
             if (!huboCambios) {
                 System.out.println("El tablero se estabilizó en la generación " + generacionActual);
                 break;
             }
             
-            // Esperar el intervalo especificado
+            //esperar el intervalo especificado
             try {
                 Thread.sleep(intervaloMs);
             } catch (InterruptedException e) {
@@ -80,27 +77,21 @@ public class Simulacion {
         enEjecucion = false;
     }
     
-    /**
-     * Detiene la ejecución indefinida de la simulación.
-     */
+    //detiene la ejecución indefinida de la simulación
     public void detener() {
         enEjecucion = false;
     }
     
-    /**
-     * Reinicia la simulación a la generación 0.
-     * NOTA: No reinicia el estado del tablero, solo el contador.
+    /*
+     *reinicia la simulación a la generación 0.
+     *no reinicia el estado del tablero, solo el contador.
      */
     public void reiniciar() {
         generacionActual = 0;
         enEjecucion = false;
     }
     
-    /**
-     * Retorna el tablero actual de la simulación.
-     * 
-     * @return el tablero
-     */
+    //retorna el tablero actual de la simulación
     public Tablero getTablero() {
         return tablero;
     }
@@ -117,30 +108,17 @@ public class Simulacion {
         this.enEjecucion = false;
     }
     
-    /**
-     * Retorna el número de la generación actual.
-     * 
-     * @return número de generación actual
-     */
+    //retorna el número de la generación actual
     public int getGeneracionActual() {
         return generacionActual;
     }
     
-    /**
-     * Indica si la simulación está en ejecución.
-     * 
-     * @return true si está ejecutándose, false en caso contrario
-     */
+    //indica si la simulación está en ejecución
     public boolean estaEnEjecucion() {
         return enEjecucion;
     }
     
-    /**
-     * Cuenta el total de celdas vivas en el tablero actual.
-     * Útil para estadísticas y visualización.
-     * 
-     * @return cantidad de celdas vivas
-     */
+    //cuenta el total de celdas vivas en el tablero actual
     public int contarCeldasVivas() {
         int vivas = 0;
         for (int i = 0; i < tablero.getFilas(); i++) {
@@ -153,11 +131,7 @@ public class Simulacion {
         return vivas;
     }
     
-    /**
-     * Retorna información del estado actual de la simulación.
-     * 
-     * @return String con estadísticas de la simulación
-     */
+    //retorna información del estado actual de la simulación
     public String getEstadisticas() {
         return String.format(
             "Generación: %d | Celdas vivas: %d | En ejecución: %s",

@@ -1,40 +1,38 @@
 package interfaz;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import modelo.*;
 import estados_celdas.*;
 
-/**
- * Interfaz de línea de comandos (CLI) para el Juego de la Vida.
- * 
- * Proporciona un menú interactivo que permite:
- * - Cargar configuración inicial desde archivo
- * - Generar tablero aleatorio
- * - Ejecutar N generaciones
- * - Ejecutar indefinidamente con intervalo configurable
- * - Visualizar el estado del tablero en cada generación
- * 
- * Esta es la interfaz OBLIGATORIA según el enunciado del TPE.
+/*
+ *interfaz de línea de comandos (CLI) para el Juego de la Vida
+ *proporciona un menú interactivo que permite:
+ *
+ *cargar configuración inicial desde archivo (con menú de selección)
+ *generar tablero aleatorio
+ *ejecutar N generaciones
+ *ejecutar indefinidamente con intervalo configurable
+ *visualizar el estado del tablero en cada generación
  */
 public class InterfazCLI {
     
     private Scanner scanner;
     private Simulacion simulacion;
     private boolean salir;
+    private static final String DIRECTORIO_EJEMPLOS = "ejemplos";
     
-    /**
-     * Constructor de la interfaz CLI.
-     */
+    //constructor de la interfaz CLI
     public InterfazCLI() {
         this.scanner = new Scanner(System.in);
         this.simulacion = null;
         this.salir = false;
     }
     
-    /**
-     * Inicia la interfaz CLI mostrando el menú principal.
-     */
+    //inicia la interfaz CLI mostrando el menú principal
     public void iniciar() {
         mostrarBienvenida();
         
@@ -48,9 +46,7 @@ public class InterfazCLI {
         System.out.println("\n¡Hasta luego!");
     }
     
-    /**
-     * Muestra el mensaje de bienvenida.
-     */
+    //muestra el mensaje de bienvenida
     private void mostrarBienvenida() {
         System.out.println("╔═══════════════════════════════════════════╗");
         System.out.println("║     JUEGO DE LA VIDA - Conway's Game      ║");
@@ -59,9 +55,7 @@ public class InterfazCLI {
         System.out.println();
     }
     
-    /**
-     * Muestra el menú principal de opciones.
-     */
+    //muestra el menú principal de opciones
     private void mostrarMenuPrincipal() {
         System.out.println("\n┌─────────────────────────────────────────┐");
         System.out.println("│           MENÚ PRINCIPAL                │");
@@ -86,11 +80,7 @@ public class InterfazCLI {
         System.out.print("Seleccione una opción: ");
     }
     
-    /**
-     * Lee una opción numérica del usuario.
-     * 
-     * @return número de opción ingresado
-     */
+    //lee una opción numérica del usuario
     private int leerOpcion() {
         try {
             return Integer.parseInt(scanner.nextLine().trim());
@@ -99,11 +89,7 @@ public class InterfazCLI {
         }
     }
     
-    /**
-     * Procesa la opción seleccionada por el usuario.
-     * 
-     * @param opcion número de opción
-     */
+    //procesa la opción seleccionada por el usuario
     private void procesarOpcion(int opcion) {
         if (simulacion == null) {
             procesarOpcionSinTablero(opcion);
@@ -112,11 +98,7 @@ public class InterfazCLI {
         }
     }
     
-    /**
-     * Procesa opciones cuando no hay tablero cargado.
-     * 
-     * @param opcion número de opción
-     */
+    //procesa opciones cuando no hay tablero cargado
     private void procesarOpcionSinTablero(int opcion) {
         switch (opcion) {
             case 1:
@@ -136,11 +118,7 @@ public class InterfazCLI {
         }
     }
     
-    /**
-     * Procesa opciones cuando hay un tablero cargado.
-     * 
-     * @param opcion número de opción
-     */
+    //procesa opciones cuando hay un tablero cargado
     private void procesarOpcionConTablero(int opcion) {
         switch (opcion) {
             case 1:
@@ -169,59 +147,152 @@ public class InterfazCLI {
         }
     }
     
-    /**
-     * Carga un tablero desde un archivo.
-     */
+    //muestra un menú con los archivos disponibles en el directorio de ejemplos
     private void cargarDesdeArchivo() {
-        System.out.print("\nIngrese la ruta del archivo: ");
-        String ruta = scanner.nextLine().trim();
+        //obtener lista de archivos en el directorio ejemplos
+        List<File> archivos = listarArchivosEjemplos();
         
+        if (archivos.isEmpty()) {
+            System.out.println("\n⚠ No se encontraron archivos en el directorio '" + DIRECTORIO_EJEMPLOS + "'");
+            System.out.print("Ingrese la ruta del archivo manualmente: ");
+            String ruta = scanner.nextLine().trim();
+            cargarArchivoDesdeRuta(ruta);
+            return;
+        }
+        
+        //mostrar menú de selección
+        while (true) {
+            mostrarMenuArchivos(archivos);
+            int opcion = leerOpcion();
+            
+            if (opcion == 0) {
+                return; //volver al menú principal
+            } else if (opcion > 0 && opcion <= archivos.size()) {
+                //cargar archivo seleccionado
+                File archivo = archivos.get(opcion - 1);
+                cargarArchivoDesdeRuta(archivo.getPath());
+                return;
+            } else if (opcion == archivos.size() + 1) {
+                //opción de ingresar ruta manualmente
+                System.out.print("\nIngrese la ruta del archivo: ");
+                String ruta = scanner.nextLine().trim();
+                cargarArchivoDesdeRuta(ruta);
+                return;
+            } else {
+                System.out.println("✗ Opción inválida. Intente nuevamente.");
+            }
+        }
+    }
+    
+    //muestra el menú con los archivos disponibles
+    private void mostrarMenuArchivos(List<File> archivos) {
+        System.out.println("\n┌─────────────────────────────────────────┐");
+        System.out.println("│  ARCHIVOS DISPONIBLES EN " + DIRECTORIO_EJEMPLOS + "/       │");
+        System.out.println("├─────────────────────────────────────────┤");
+        
+        for (int i = 0; i < archivos.size(); i++) {
+            String nombre = archivos.get(i).getName();
+            System.out.printf("│ %d. %-37s│%n", (i + 1), nombre);
+        }
+        
+        System.out.printf("│ %d. %-37s│%n", (archivos.size() + 1), "[Ingresar ruta manualmente]");
+        System.out.println("│ 0. Volver                               │");
+        System.out.println("└─────────────────────────────────────────┘");
+        System.out.print("Seleccione un archivo: ");
+    }
+    
+    //lista todos los archivos .txt en el directorio de ejemplos
+    private List<File> listarArchivosEjemplos() {
+        List<File> archivos = new ArrayList<>();
+        File directorio = new File(DIRECTORIO_EJEMPLOS);
+        
+        if (!directorio.exists() || !directorio.isDirectory()) {
+            return archivos;
+        }
+        
+        File[] listaArchivos = directorio.listFiles((dir, nombre) -> 
+            nombre.toLowerCase().endsWith(".txt")
+        );
+        
+        if (listaArchivos != null) {
+            for (File archivo : listaArchivos) {
+                archivos.add(archivo);
+            }
+        }
+        
+        return archivos;
+    }
+    
+    //carga un tablero desde una ruta de archivo específica
+    private void cargarArchivoDesdeRuta(String ruta) {
         try {
             Tablero tablero = LectorArchivos.cargarDesdeArchivo(ruta);
             simulacion = new Simulacion(tablero);
             
-            System.out.println("✓ Tablero cargado exitosamente!");
+            System.out.println("\n✓ Tablero cargado exitosamente!");
+            System.out.println("  Archivo: " + ruta);
             System.out.println("  Dimensiones: " + tablero.getFilas() + "x" + tablero.getColumnas());
             System.out.println("  Celdas vivas: " + simulacion.contarCeldasVivas());
             mostrarTablero();
             
         } catch (IOException e) {
-            System.err.println("✗ Error al leer el archivo:");
+            System.err.println("\n✗ Error al leer el archivo:");
             System.err.println("  " + e.getMessage());
         } catch (IllegalArgumentException e) {
-            System.err.println("✗ Formato de archivo inválido:");
+            System.err.println("\n✗ Formato de archivo inválido:");
             System.err.println("  " + e.getMessage());
         }
     }
     
-    /**
-     * Genera un tablero aleatorio.
-     */
+    //genera un tablero aleatorio
     private void generarTableroAleatorio() {
-        System.out.print("Ingrese filas: ");
-        int filas = scanner.nextInt();
-        System.out.print("Ingrese columnas: ");
-        int columnas = scanner.nextInt();
+        System.out.print("\nIngrese número de filas: ");
+        int filas = leerOpcion();
         
-        Tablero tablero = new Tablero(filas, columnas);  // Esto ya crea todas las celdas como muertas extendidas
+        if (filas <= 0) {
+            System.out.println("✗ El número de filas debe ser positivo.");
+            return;
+        }
+        
+        System.out.print("Ingrese número de columnas: ");
+        int columnas = leerOpcion();
+        
+        if (columnas <= 0) {
+            System.out.println("✗ El número de columnas debe ser positivo.");
+            return;
+        }
+        
+        System.out.print("Ingrese probabilidad de celda viva (0.0-1.0, ej: 0.3): ");
+        double probabilidad;
+        try {
+            probabilidad = Double.parseDouble(scanner.nextLine().trim());
+            if (probabilidad < 0 || probabilidad > 1) {
+                System.out.println("✗ La probabilidad debe estar entre 0.0 y 1.0");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("✗ Probabilidad inválida.");
+            return;
+        }
+        
+        Tablero tablero = new Tablero(filas, columnas);
         
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
-                if (Math.random() < 0.3) {  // Por ejemplo, 30% de probabilidad de estar viva (ajustable)
+                if (Math.random() < probabilidad) {
                     tablero.establecerEstadoCelda(i, j, new CeldaVivaExtendida());
                 }
-                // Si no, queda como CeldaMuertaExtendida (ya inicializada en el constructor)
             }
         }
         
         simulacion = new Simulacion(tablero);
-        System.out.println("\n¡Tablero aleatorio generado!");
+        System.out.println("\n✓ Tablero aleatorio generado!");
+        System.out.println("  Dimensiones: " + filas + "x" + columnas);
+        System.out.println("  Celdas vivas: " + simulacion.contarCeldasVivas());
         mostrarTablero();
     }  
     
-    /**
-     * Muestra el tablero actual en consola.
-     */
+    //muestra el tablero actual en consola
     private void mostrarTablero() {
         System.out.println("\n" + crearMarcoSuperior());
         System.out.println("  Generación: " + simulacion.getGeneracionActual());
@@ -239,25 +310,19 @@ public class InterfazCLI {
         System.out.println(crearMarcoInferior());
     }
     
-    /**
-     * Crea el marco superior del tablero.
-     */
+    //crea el marco superior del tablero
     private String crearMarcoSuperior() {
         int ancho = simulacion.getTablero().getColumnas() * 2 + 2;
         return "┌" + "─".repeat(ancho) + "┐";
     }
     
-    /**
-     * Crea el marco inferior del tablero.
-     */
+    //crea el marco inferior del tablero
     private String crearMarcoInferior() {
         int ancho = simulacion.getTablero().getColumnas() * 2 + 2;
         return "└" + "─".repeat(ancho) + "┘";
     }
     
-    /**
-     * Ejecuta una sola generación.
-     */
+    //ejecuta una sola generación
     private void ejecutarUnaGeneracion() {
         boolean huboCambios = simulacion.ejecutarGeneracion();
         mostrarTablero();
@@ -267,9 +332,7 @@ public class InterfazCLI {
         }
     }
     
-    /**
-     * Ejecuta N generaciones.
-     */
+    //ejecuta N generaciones
     private void ejecutarNGeneraciones() {
         System.out.print("\n¿Cuántas generaciones desea ejecutar?: ");
         int n = leerOpcion();
@@ -282,36 +345,49 @@ public class InterfazCLI {
         System.out.print("¿Mostrar cada generación? (s/n): ");
         boolean mostrar = scanner.nextLine().trim().equalsIgnoreCase("s");
         
-        System.out.println("\nEjecutando " + n + " generaciones...\n");
-        
-        for (int i = 0; i < n; i++) {
-            boolean huboCambios = simulacion.ejecutarGeneracion();
+        if (mostrar) {
+            System.out.print("Intervalo entre generaciones en ms (ej: 300): ");
+            int intervalo = leerOpcion();
+            if (intervalo < 0) intervalo = 300;
             
-            if (mostrar) {
+            System.out.println("\nEjecutando " + n + " generaciones...\n");
+            
+            for (int i = 0; i < n; i++) {
+                boolean huboCambios = simulacion.ejecutarGeneracion();
+                
                 mostrarTablero();
+                
+                if (!huboCambios) {
+                    System.out.println("⚠ El tablero se estabilizó en la generación " + simulacion.getGeneracionActual());
+                    break;
+                }
+                
                 try {
-                    Thread.sleep(300);
+                    Thread.sleep(intervalo);
                 } catch (InterruptedException e) {
                     break;
                 }
             }
+        } else {
+            System.out.println("\nEjecutando " + n + " generaciones...");
             
-            if (!huboCambios) {
-                System.out.println("⚠ El tablero se estabilizó en la generación " + simulacion.getGeneracionActual());
-                break;
+            for (int i = 0; i < n; i++) {
+                boolean huboCambios = simulacion.ejecutarGeneracion();
+                
+                if (!huboCambios) {
+                    System.out.println("⚠ El tablero se estabilizó en la generación " + simulacion.getGeneracionActual());
+                    mostrarTablero();
+                    break;
+                }
             }
-        }
-        
-        if (!mostrar) {
+            
             mostrarTablero();
         }
         
         System.out.println("✓ Simulación completada.");
     }
     
-    /**
-     * Ejecuta la simulación en modo continuo.
-     */
+    //ejecuta la simulación en modo continuo
     private void ejecutarModoContinuo() {
         System.out.print("\nIntervalo entre generaciones (ms): ");
         int intervalo = leerOpcion();
@@ -328,7 +404,7 @@ public class InterfazCLI {
             while (true) {
                 boolean huboCambios = simulacion.ejecutarGeneracion();
                 
-                // Limpiar pantalla (simulado)
+                //limpiar pantalla (simulado)
                 System.out.print("\033[H\033[2J");
                 System.out.flush();
                 
@@ -350,25 +426,19 @@ public class InterfazCLI {
         scanner.nextLine();
     }
     
-    /**
-     * Muestra estadísticas de la simulación.
-     */
+    //muestra estadísticas de la simulación
     private void mostrarEstadisticas() {
         System.out.println("\n📊 Estadísticas:");
         System.out.println("   " + simulacion.getEstadisticas());
     }
     
-    /**
-     * Reinicia la simulación.
-     */
+    //reinicia la simulación
     private void reiniciar() {
         simulacion = null;
         System.out.println("\n✓ Simulación reiniciada. Cargue un nuevo tablero.");
     }
     
-    /**
-     * Muestra la ayuda con el formato de archivo.
-     */
+    //muestra la ayuda con el formato de archivo
     private void mostrarAyuda() {
         System.out.println("\n" + LectorArchivos.getFormatoEsperado());
     }

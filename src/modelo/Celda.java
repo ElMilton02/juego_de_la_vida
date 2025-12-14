@@ -70,8 +70,8 @@ public class Celda {
     }
 
     /*
-     * Compara dos celdas, son iguales si tienen la misma
-     * posición y el mismo estado.
+     *Compara dos celdas, son iguales si tienen la misma
+     *posición y el mismo estado.
      */
     @Override
     public boolean equals(Object obj) {
