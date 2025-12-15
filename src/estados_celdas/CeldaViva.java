@@ -15,7 +15,7 @@ public class CeldaViva extends EstadoCelda {
         if (vecinosVivos < 2 || vecinosVivos > 3) {
             return new CeldaMuerta();  // Muere por soledad o sobrepoblación (sin probabilidades)
         } else {
-            return new CeldaViva();    // Sobrevive (sin probabilidades)
+            return new CeldaVivaExtendida();    // Sobrevive (sin probabilidades)
         }
     }
     

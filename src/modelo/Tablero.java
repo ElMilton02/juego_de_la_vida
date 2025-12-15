@@ -1,7 +1,7 @@
 package modelo;
 
 import estados_celdas.EstadoCelda;
-import estados_celdas.CeldaMuertaExtendida;
+import estados_celdas.CeldaMuerta;
 
 /*
  *representa el tablero completo del Juego de la Vida
@@ -33,7 +33,7 @@ public class Tablero {
     private void inicializarTablero() {
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
-                celdas[i][j] = new Celda(i, j, new CeldaMuertaExtendida());
+                celdas[i][j] = new Celda(i, j, new CeldaMuerta());
             }
         }
     }
@@ -74,10 +74,10 @@ public class Tablero {
     public int contarVecinosVivos(int fila, int columna) {
         int vecinosVivos = 0;
         
-        // Recorrer las 8 posiciones adyacentes
+        //recorrer las 8 posiciones adyacentes
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                // Saltar la celda central (la propia celda)
+                //saltar la celda central (la propia celda)
                 if (i == 0 && j == 0) {
                     continue;
                 }
@@ -85,7 +85,7 @@ public class Tablero {
                 int vecinoFila = fila + i;
                 int vecinoColumna = columna + j;
                 
-                // Verificar si el vecino está dentro del tablero y está vivo
+                //verificar si el vecino está dentro del tablero y está vivo
                 if (posicionValida(vecinoFila, vecinoColumna) && 
                     celdas[vecinoFila][vecinoColumna].estaViva()) {
                     vecinosVivos++;
@@ -96,18 +96,16 @@ public class Tablero {
         return vecinosVivos;
     }
     
-    /**
-     * Evoluciona el tablero a la siguiente generación.
+    /*
+     *evoluciona el tablero a la siguiente generación.
      * 
-     * Proceso:
-     * 1. Calcula el siguiente estado de todas las celdas
-     * 2. Actualiza todas las celdas simultáneamente
-     * 3. Detecta si hubo cambios
-     * 
-     * @return true si hubo cambios en el tablero, false si quedó estable
+     *proceso:
+     *1. Calcula el siguiente estado de todas las celdas
+     *2. Actualiza todas las celdas simultáneamente
+     *3. Detecta si hubo cambios
      */
     public boolean siguienteGeneracion() {
-        // Matriz temporal para almacenar los nuevos estados
+        //matriz temporal para almacenar los nuevos estados
         EstadoCelda[][] nuevosEstados = new EstadoCelda[filas][columnas];
         boolean huboCambios = false;
         
@@ -117,14 +115,14 @@ public class Tablero {
                 int vecinosVivos = contarVecinosVivos(i, j);
                 nuevosEstados[i][j] = celdas[i][j].calcularSiguienteEstado(vecinosVivos);
                 
-                // Verificar si hay cambio en esta celda
+                //verificar si hay cambio en esta celda
                 if (!nuevosEstados[i][j].equals(celdas[i][j].getEstado())) {
                     huboCambios = true;
                 }
             }
         }
         
-        // luego actualizar todas las celdas con los nuevos estados
+        //luego actualizar todas las celdas con los nuevos estados
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
                 celdas[i][j].setEstado(nuevosEstados[i][j]);

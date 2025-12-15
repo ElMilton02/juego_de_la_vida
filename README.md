@@ -56,7 +56,6 @@ juego-de-la-vida/
 │   ├── CeldaViva.java          # Estado vivo clásico
 │   ├── CeldaMuerta.java        # Estado muerto clásico
 │   ├── CeldaVivaExtendida.java # Viva con probabilidad de enfermarse
-│   ├── CeldaMuertaExtendida.java # Muerta extendida
 │   ├── CeldaEnferma.java       # Estado enfermo (extensión)
 │   └── CeldaLatente.java       # Estado latente (extensión)
 ├── interfaz/

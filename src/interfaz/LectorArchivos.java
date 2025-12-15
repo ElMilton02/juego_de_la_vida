@@ -132,7 +132,7 @@ public class LectorArchivos {
         switch (Character.toLowerCase(c)) {
             case '.':
             case ' ':
-                return new CeldaMuertaExtendida();
+                return new CeldaMuerta();
             
             case 'o':
                 return new CeldaVivaExtendida();  
@@ -166,15 +166,15 @@ public class LectorArchivos {
                "Primera línea: filas columnas (números separados por espacio)\n" +
                "Siguientes líneas: caracteres representando estados de celdas\n" +
                "\nCaracteres válidos:\n" +
-               "  . o espacio = celda muerta\n" +
-               "  O, o, X, x = celda viva\n" +
+               "  . = celda muerta\n" +
+               "  O, o = celda viva\n" +
                "  E, e = celda enferma (extensión)\n" +
-               "  L, l = celda latente (extensión)\n" +
+               "  X, x = celda latente (extensión)\n" +
                "\nEjemplo:\n" +
                "4 5\n" +
                ".....\n" +
-               "..x..\n" +
-               "..x..\n" +
-               "..x..";
+               "..O..\n" +
+               "..O..\n" +
+               "..O..";
     }
 }

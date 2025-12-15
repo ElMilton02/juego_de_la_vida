@@ -12,7 +12,7 @@ public class CeldaEnferma extends EstadoCelda {
     
     @Override
     public EstadoCelda calcularSiguienteEstado(int vecinosVivos) {
-        return new CeldaMuertaExtendida();  // Siempre muere
+        return new CeldaMuerta();  // Siempre muere
     }
     
     @Override
